@@ -8,5 +8,9 @@
             "email": "simon@deblan.fr"
         }
     ],
-    "require": {}
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    }
 }
