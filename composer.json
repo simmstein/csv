@@ -1,0 +1,12 @@
+{
+    "name": "deblan/csv",
+    "description": "A simple PHP library to parse and generate CSV files.",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Simon Vieille",
+            "email": "simon@deblan.fr"
+        }
+    ],
+    "require": {}
+}
