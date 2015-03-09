@@ -10,8 +10,6 @@ class Csv
 
     private $enclosure;
 
-    private $escape_char;
-
     private $endline;
 
     private $datas;
@@ -24,11 +22,10 @@ class Csv
 
     private $hasLegend = false;
 
-    public function __construct($delimiter = ';', $enclosure = '"', $escape_char = '\\', $endline = "\n", $encoding = 'UTF-8')
+    public function __construct($delimiter = ';', $enclosure = '"', $endline = "\n", $encoding = 'UTF-8')
     {
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
-        $this->setEscapeChar($escape_char);
         $this->setEndLine($endline);
         $this->setEncoding($encoding);
         $this->datas  = array(0 => null);
@@ -53,6 +50,11 @@ class Csv
     }
 
     public function getHasLegend()
+    {
+        return $this->hasLegend;
+    }
+
+    public function hasLegend()
     {
         return $this->hasLegend;
     }
@@ -114,15 +116,6 @@ class Csv
         $this->enclose = $v;
     }
 
-    public function setEscapeChar($v)
-    {
-        if (!is_string($v)) {
-            throw new CsvInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
-        }
-
-        $this->escape_char = $v;
-    }
-
     public function getLegend()
     {
         return $this->legend;
@@ -137,13 +130,13 @@ class Csv
     {
         $this->render = "";
 
-        if (isset($this->datas[0]) && $this->datas[0] !== null) {
+        if ($this->datas[0] !== null) {
             $this->append($this->datasToCsvLine($this->datas[0]));
         }
 
         unset($this->datas[0]);
 
-        foreach ($this->datas as $k => $v) {
+        foreach ($this->datas as $v) {
             $this->append($this->datasToCsvLine($v));
         }
 
@@ -160,7 +153,7 @@ class Csv
 
     public function hasDatas()
     {
-        return count($this->datas) > ($this->getHasLegend() ? 1 : 0);
+        return count($this->datas) > 1;
     }
 
     protected function datasToCsvLine($datas)
