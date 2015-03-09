@@ -26,6 +26,18 @@ class CsvTest extends \PHPUnit_Framework_TestCase
             '"foo";"bar"'."\n",
             $csv->compile()
         );
+        
+		$csv = new Csv();
+        
+		$csv->addLine(array('foo', 'bar'));
+        $csv->setLegend(array('bim', 'bam'));
+
+        $this->assertEquals(true, $csv->getHasLegend());
+        $this->assertEquals(
+            '"bim";"bam"'."\n".
+            '"foo";"bar"'."\n",
+            $csv->compile()
+        );
     }
 
     public function testHasDatas()
