@@ -3,7 +3,24 @@ CSV parser/generator
 
 A simple PHP library to parse and generate CSV files.
 
-## Examples
+## Composer installation
+
+```
+$ composer require deblan/csv
+```
+
+Or in your composer.json:
+
+```
+{
+    "require": {
+        [...]
+        "deblan/csv": "dev-master"
+    }
+}
+```
+
+## Usages
 
 ### Generator
 
