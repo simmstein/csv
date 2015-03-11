@@ -8,11 +8,11 @@
     processIsolation            = "false"
     stopOnFailure               = "false"
     syntaxCheck                 = "false"
-    bootstrap                   = "./tests/bootstrap.php" >
+    bootstrap                   = "vendor/autoload.php" >
 
 	<testsuites>
 		<testsuite name="Deblan CSV Test Suite">
-			<directory>tests/*</directory>
+			<directory>tests/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
