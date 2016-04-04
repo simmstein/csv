@@ -113,6 +113,10 @@ class CsvParser
 
     public function parse()
     {
+        if (!empty($this->datas)) {
+            return $this->datas;
+        }
+
         $lines = file($this->filename);
 
         if (empty($lines)) {
