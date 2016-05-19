@@ -63,6 +63,8 @@ class Csv
     {
         $this->setHasLegend(true);
 
+        $this->legend = $values;
+
         $this->addLine($values, 0);
     }
 

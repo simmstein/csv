@@ -17,7 +17,10 @@ class CsvTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(false, $csv->getHasLegend());
 
-        $csv->setLegend(array('bim', 'bam'));
+        $csv->setLegend($a = array('bim', 'bam'));
+
+        $this->assertEquals($a, $csv->getLegend());
+        
         $csv->addLine(array('foo', 'bar'));
 
         $this->assertEquals(true, $csv->getHasLegend());
