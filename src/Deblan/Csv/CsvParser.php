@@ -90,6 +90,11 @@ class CsvParser
     {
         return $this->hasLegend;
     }
+    
+    public function getLegend()
+    {
+        return $this->legend;
+    }
 
     public function setNullValues(array $v)
     {
