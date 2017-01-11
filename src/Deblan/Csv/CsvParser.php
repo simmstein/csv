@@ -65,7 +65,7 @@ class CsvParser
             throw new CsvParserInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
         }
 
-        $this->enclose = $v;
+        $this->enclosure = $v;
     }
 
     public function setEscapeChar($v)
