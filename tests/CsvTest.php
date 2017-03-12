@@ -1,14 +1,13 @@
 <?php
 
 use Deblan\Csv\Csv;
-use PHPUnit_Framework_TestCase;
 
 /**
  * class CsvTest.
  *
  * @author Simon Vieille <simon@deblan.fr>
  */
-class CsvTest extends PHPUnit_Framework_TestCase
+class CsvTest extends \PHPUnit_Framework_TestCase
 {
     public function testGettersAndSettersAndDefaultValues()
     {
@@ -16,6 +15,11 @@ class CsvTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(';', $csv->getDelimiter());
         $csv->setDelimiter('#');
         $this->assertEquals('#', $csv->getDelimiter());
+        
+        $csv = new Csv();
+        $this->assertEquals('"', $csv->getEnclosure());
+        $csv->setEnclosure('#');
+        $this->assertEquals('#', $csv->getEnclosure());
 
         $csv = new Csv();
         $this->assertEquals("\n", $csv->getEndOfLine());

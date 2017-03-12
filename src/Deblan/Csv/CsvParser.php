@@ -2,149 +2,225 @@
 
 namespace Deblan\Csv;
 
-use Deblan\Csv\Exception\CsvParserInvalidParameterException;
-use Deblan\Csv\Exception\CsvParserException;
-
+/**
+ * class Csv.
+ *
+ * @author Simon Vieille <simon@deblan.fr>
+ */
 class CsvParser
 {
-    private $filename;
+    /**
+     * @var string
+     */
+    protected $delimiter = ';';
 
-    private $delimiter;
+    /**
+     * @var string
+     */
+    protected $enclosure = '"';
 
-    private $enclosure;
+    /**
+     * @var string
+     */
+    protected $endOfLine = "\n";
 
-    private $escapeChar;
+    /**
+     * @var array
+     */
+    protected $datas = [];
 
-    private $hasLegend;
+    /**
+     * @var array
+     */
+    protected $headers = [];
 
-    private $datas = array();
+    /**
+     * @var bool
+     */
+    protected $hasHeaders = false;
 
-    private $legend = array();
-
-    private $nullValues = array();
-
-    public function __construct($filename, $delimiter = ';', $enclosure = '"', $escapeChar = '\\', $hasLegend = false, array $nullValues = array(''))
+    /**
+     * Set the value of "delimiter".
+     *
+     * @param string $delimiter
+     *
+     * @return Csv
+     */
+    public function setDelimiter($delimiter)
     {
-        $this->setFilename($filename);
-        $this->setDelimiter($delimiter);
-        $this->setEnclosure($enclosure);
-        $this->setEscapeChar($escapeChar);
-        $this->setHasLegend($hasLegend);
-        $this->setNullValues($nullValues);
-    }
+        $this->delimiter = (string) $delimiter;
 
-    public function setFilename($v)
-    {
-        if (!is_string($v)) {
-            throw new CsvParserInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
-        }
-
-        if (!file_exists($v)) {
-            throw new CsvParserException(sprintf('"%s" does not exist.', $v));
-        }
-
-        if (!is_readable($v)) {
-            throw new CsvParserException(sprintf('"%s" is not readable.', $v));
-        }
-
-        $this->filename = $v;
-    }
-
-    public function setDelimiter($v)
-    {
-        if (!is_string($v)) {
-            throw new CsvParserInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
-        }
-
-        $this->delimiter = $v;
-    }
-
-    public function setEnclosure($v)
-    {
-        if (!is_string($v)) {
-            throw new CsvParserInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
-        }
-
-        $this->enclosure = $v;
-    }
-
-    public function setEscapeChar($v)
-    {
-        if (!is_string($v)) {
-            throw new CsvParserInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
-        }
-
-        $this->escapeChar = $v;
-    }
-
-    public function setHasLegend($v)
-    {
-        if (!is_bool($v)) {
-            throw new CsvParserInvalidParameterException(sprintf('"%s" is not a valid bool.', $v));
-        }
-
-        $this->hasLegend = $v;
-    }
-
-    public function getHasLegend()
-    {
-        return $this->hasLegend;
-    }
-    
-    public function getLegend()
-    {
-        return $this->legend;
-    }
-
-    public function setNullValues(array $v)
-    {
-        $this->nullValues = $v;
+        return $this;
     }
 
     /**
+     * Get the value of "delimiter".
      *
-     * To improve...
-     *
+     * @return array
      */
-    protected function cleanNullValues($line)
+    public function getDelimiter()
     {
-        return str_replace($this->nullValues, '', $line);
+        return $this->delimiter;
     }
 
+    /**
+     * Set the value of "enclosure".
+     *
+     * @param string $enclosure
+     *
+     * @return Csv
+     */
+    public function setEnclosure($enclosure)
+    {
+        $this->enclosure = (string) $enclosure;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of "enclosure".
+     *
+     * @return string
+     */
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    /**
+     * Set the value of "endOfLine".
+     *
+     * @param string $endOfLine
+     *
+     * @return Csv
+     */
+    public function setEndOfLine($endOfLine)
+    {
+        $this->endOfLine = (string) $endOfLine;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of "endOfLine".
+     *
+     * @return string
+     */
+    public function getEndOfLine()
+    {
+        return $this->endOfLine;
+    }
+
+    /**
+     * Get the value of "hasHeaders".
+     *
+     * @return bool
+     */
+    public function getHasHeaders()
+    {
+        return $this->hasHeaders;
+    }
+
+    /**
+     * Set the value of "headers".
+     *
+     * @param bool $hasHeaders
+     *
+     * @return Csv
+     */
+    public function setHasHeaders($hasHeaders)
+    {
+        $this->hasHeaders = (bool) $hasHeaders;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of "headers".
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Get the value of "datas".
+     *
+     * @return array
+     */
     public function getDatas()
     {
         return $this->datas;
     }
 
-    public function parse()
+    /*
+     * Parses a string.
+     *
+     * @param string $string
+     *
+     * @return CsvParser
+     */
+    public function parseString($string)
     {
-        if (!empty($this->datas)) {
-            return $this->datas;
-        }
+        $this->datas = [];
+        $this->headers = [];
+        $lines = str_getcsv($string, $this->endOfLine);
 
-        $lines = file($this->filename);
+        foreach ($lines as $key => $line) {
+            $data = $this->parseLine($line, $this->hasHeaders && $key === 0);
 
-        if (empty($lines)) {
-            return true;
-        }
-
-        if ($this->hasLegend) {
-            $this->legend = str_getcsv($lines[0], $this->delimiter, $this->enclosure, $this->escapeChar);
-            unset($lines[0]);
-        }
-
-        foreach ($lines as $l => $line) {
-            $datas = str_getcsv($this->cleanNullValues($line), $this->delimiter, $this->enclosure, $this->escapeChar);
-
-            if ($this->hasLegend) {
-                foreach ($this->legend as $k => $v) {
-                    $datas[$v] = isset($datas[$k]) ? $datas[$k] : null;
-                }
+            if ($data === null) {
+                continue;
             }
 
-            $this->datas[] = $datas;
+            if ($this->hasHeaders && $key === 0) {
+                $this->headers = $data;
+            } else {
+                $this->datas[] = $data;
+            }
         }
 
-        return true;
+        return $this;
+    }
+
+    /*
+     * Parses a line.
+     *
+     * @param string $line
+     * @param bool $isHeaders
+     *
+     * @return array
+     */
+    public function parseLine($line, $isHeaders = false)
+    {
+        $line = trim($line);
+
+        if (empty($line)) {
+            return null;
+        }
+
+        $csv = str_getcsv($line, $this->delimiter, $this->enclosure);
+
+        if (!$isHeaders && $this->hasHeaders && !empty($this->headers)) {
+            foreach ($this->headers as $key => $header) {
+                $csv[$header] = isset($csv[$key]) ? $csv[$key] : null;
+            }
+        }
+
+        return $csv;
+    }
+    
+    /*
+     * Parses a file.
+     *
+     * @param string $filaname
+     *
+     * @return CsvParser
+     */
+    public function parseFile($filename)
+    {
+        return $this->parseString(file_get_contents($filename));
     }
 }

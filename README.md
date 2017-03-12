@@ -1,6 +1,8 @@
 CSV parser/generator
 ====================
 
+![](https://phpci.gitnet.fr//build-status/image/6)
+
 A simple PHP library to parse and generate CSV files.
 
 ## Composer installation
@@ -53,16 +55,16 @@ $csv->prependData(['Boo', '$3000']);
 $csv->setDatas([[...], [...]]);
 
 // Defines the header
-$csv->setHeaders(["Product", "Price"]);
+$csv->setHeaders(['Product', 'Price']);
 
 // Rendering
 $result = $csv->render();
 
 // Rendering to a file
-$result = $csv->render("products.csv");
+$result = $csv->render('products.csv');
 
 // Appending to a file
-$result = $csv->render("products.csv", FILE_APPEND);
+$result = $csv->render('products.csv', FILE_APPEND);
 ```
 
 ### Parser
@@ -70,10 +72,27 @@ $result = $csv->render("products.csv", FILE_APPEND);
 ```php
 use Deblan\Csv\CsvParser;
 
-$csv = new CsvParser('products.csv');
-$csv->setHasLegend(true);
-$csv->parse();
+$csv = new CsvParser();
 
-$legend = $csv->getLegend();
+// Defines the delimiter (default is ;)
+$csv->setDelimiter(";");
+
+// Defines the enclosure (default is ")
+$csv->setEnclosure('"');
+
+// Defines the end of line (default is \n)
+$csv->setEndOfLine("\n");
+
+// Headers?
+$csv->setHasHeaders(true);
+
+// Parse a file
+$csv->parseFile('products.csv');
+
+// Parse a string
+$csv->parseString($myString);
+
+// Headers and datas
+$headers = $csv->getHeaders();
 $products = $csv->getDatas();
 ```
