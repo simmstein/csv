@@ -333,7 +333,7 @@ class Csv
                 $content = $this->endOfLine.$content;
             }
 
-            file_put_contents($filename, $content, $flags, $context);
+            file_put_contents($filename, $content, $flags);
         }
 
         return $this->render;
