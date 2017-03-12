@@ -15,7 +15,7 @@ class CsvTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(';', $csv->getDelimiter());
         $csv->setDelimiter('#');
         $this->assertEquals('#', $csv->getDelimiter());
-        
+
         $csv = new Csv();
         $this->assertEquals('"', $csv->getEnclosure());
         $csv->setEnclosure('#');
@@ -98,7 +98,7 @@ class CsvTest extends \PHPUnit_Framework_TestCase
         $csv->addData(['foo', 'bar']);
         $csv->setDelimiter('#');
         $this->assertEquals('"a"#"b"'."\n".'"foo"#"bar"', $csv->render());
-        
+
         $filename = tempnam(sys_get_temp_dir(), 'csvtests');
 
         $csv = new Csv();
@@ -122,7 +122,7 @@ class CsvTest extends \PHPUnit_Framework_TestCase
         $csv->addData(['foo2', 'bar2']);
         $render = $csv->render($filename, FILE_APPEND);
         $this->assertEquals('"a";"b"'."\n".'"foo";"bar"'."\n".'"foo2";"bar2"', file_get_contents($filename));
-        
+
         unlink($filename);
     }
 

@@ -211,7 +211,7 @@ class CsvParser
 
         return $csv;
     }
-    
+
     /*
      * Parses a file.
      *
