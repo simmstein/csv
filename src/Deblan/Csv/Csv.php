@@ -2,192 +2,340 @@
 
 namespace Deblan\Csv;
 
-use Deblan\Csv\Exception\CsvInvalidParameterException;
-
+/**
+ * class Csv.
+ *
+ * @author Simon Vieille <simon@deblan.fr>
+ */
 class Csv
 {
-    private $delimiter;
+    /**
+     * @var string
+     */
+    protected $delimiter = ';';
 
-    private $enclosure;
+    /**
+     * @var string
+     */
+    protected $enclosure = '"';
 
-    private $endline;
+    /**
+     * @var string
+     */
+    protected $endOfLine = "\n";
 
-    private $datas;
+    /**
+     * @var array
+     */
+    protected $datas = [];
 
-    private $legend;
+    /**
+     * @var array
+     */
+    protected $headers = [];
 
-    private $render;
+    /**
+     * @var string
+     */
+    protected $charset = 'UTF-8';
 
-    private $encoding;
+    /**
+     * @var bool
+     */
+    protected $isModified = false;
 
-    private $hasLegend = false;
+    /**
+     * @var string
+     */
+    protected $render;
 
-    public function __construct($delimiter = ';', $enclosure = '"', $endline = "\n", $encoding = 'UTF-8')
+    /**
+     * Set the value of "delimiter".
+     *
+     * @param string $delimiter
+     *
+     * @return Csv
+     */
+    public function setDelimiter($delimiter)
     {
-        $this->setDelimiter($delimiter);
-        $this->setEnclosure($enclosure);
-        $this->setEndLine($endline);
-        $this->setEncoding($encoding);
-        $this->datas  = array(0 => null);
-        $this->legend = array();
-        $this->render = "";
-    }
-
-    public function setFilename($v)
-    {
-        if (!is_string($v)) {
-            throw new CsvInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
+        if ($this->delimiter !== $delimiter) {
+            $this->delimiter = $delimiter;
+            $this->isModified = true;
         }
-
-        $this->filename = $v;
-    }
-
-    protected function setHasLegend($hasLegend)
-    {
-        $this->hasLegend = $hasLegend;
 
         return $this;
     }
 
-    public function getHasLegend()
+    /**
+     * Get the value of "delimiter".
+     *
+     * @return array
+     */
+    public function getDelimiter()
     {
-        return $this->hasLegend;
+        return $this->delimiter;
     }
 
-    public function hasLegend()
+    /**
+     * Set the value of "enclosure".
+     *
+     * @param string $enclosure
+     *
+     * @return Csv
+     */
+    public function setEnclosure($enclosure)
     {
-        return $this->hasLegend;
-    }
+        $enclosure = (string) $enclosure;
 
-    public function setLegend(array $values)
-    {
-        $this->setHasLegend(true);
-
-        $this->legend = $values;
-
-        $this->addLine($values, 0);
-    }
-
-    public function addLine(array $values, $key = null)
-    {
-        if ($key !== null) {
-            $this->datas[$key] = $values;
-
-            return true;
+        if ($this->enclosure !== $enclosure) {
+            $this->enclosure = $enclosure;
+            $this->isModified = true;
         }
-
-        $this->datas[] = $values;
-    }
-
-    public function setEncoding($encoding)
-    {
-        $this->encoding = $encoding;
 
         return $this;
     }
 
-    public function getEncoding()
+    /**
+     * Get the value of "enclosure".
+     *
+     * @return string
+     */
+    public function getEnclosure()
     {
-        return $this->encoding;
+        return $this->enclosure;
     }
 
-    public function setDelimiter($v)
+    /**
+     * Set the value of "endOfLine".
+     *
+     * @param string $endOfLine
+     *
+     * @return Csv
+     */
+    public function setEndOfLine($endOfLine)
     {
-        if (!is_string($v)) {
-            throw new CsvInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
+        if ($this->endOfLine !== $endOfLine) {
+            $this->endOfLine = (string) $endOfLine;
+            $this->isModified = true;
         }
 
-        $this->delimiter = $v;
+        return $this;
     }
 
-    public function setEndline($v)
+    /**
+     * Get the value of "endOfLine".
+     *
+     * @return string
+     */
+    public function getEndOfLine()
     {
-        if (!is_string($v)) {
-            throw new CsvInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
+        return $this->endOfLine;
+    }
+
+    /**
+     * Set the value of "headers".
+     *
+     * @param array $headers
+     *
+     * @return Csv
+     */
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
+
+        if ($this->headers !== $headers) {
+            $this->headers = $headers;
+            $this->isModified = true;
         }
 
-        $this->endline = $v;
+        return $this;
     }
 
-    public function setEnclosure($v)
+    /**
+     * Get the value of "headers".
+     *
+     * @return array
+     */
+    public function getHeaders()
     {
-        if (!is_string($v)) {
-            throw new CsvInvalidParameterException(sprintf('"%s" is not a valid string.', $v));
+        return $this->headers;
+    }
+
+    /**
+     * Set the value of "charset".
+     *
+     * @param string $charset
+     *
+     * @return Csv
+     */
+    public function setCharset($charset)
+    {
+        if ($this->charset !== $charset) {
+            $this->charset = (string) $charset;
+            $this->isModified = true;
         }
 
-        $this->enclose = $v;
+        return $this;
     }
 
-    public function getLegend()
+    /**
+     * Get the value of "charset".
+     *
+     * @return string
+     */
+    public function getCharset()
     {
-        return $this->legend;
+        return $this->charset;
     }
 
+    /*
+     * Sets the value of "datas".
+     *
+     * @param array $datas
+     *
+     * @return Csv
+     */
+    public function setDatas(array $datas)
+    {
+        if ($this->datas !== $datas) {
+            $this->datas = $datas;
+            $this->isModified = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of "datas".
+     *
+     * @return array
+     */
     public function getDatas()
     {
         return $this->datas;
     }
 
-    public function compile()
+    /*
+     * Appends data.
+     *
+     * @param array $data
+     *
+     * @return Csv
+     */
+    public function appendData(array $data)
     {
-        $this->render = "";
+        $this->datas[] = $data;
+        $this->isModified = true;
 
-        if ($this->datas[0] !== null) {
-            $this->append($this->datasToCsvLine($this->datas[0]));
+        return $this;
+    }
+
+    /*
+     * Alias of "appendData()".
+     *
+     * {@inheritdoc self::appendData()}
+     */
+    public function addData(array $data)
+    {
+        return $this->appendData($data);
+    }
+
+    /*
+     * Prepends data.
+     *
+     * @param array $data
+     *
+     * @return Csv
+     */
+    public function preprendData(array $data)
+    {
+        array_unshift($this->datas, $data);
+        $this->isModified = true;
+
+        return $this;
+    }
+
+    /**
+     * Formats an array data to a CSV string.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function formatData(array $data)
+    {
+        $columns = [];
+
+        foreach ($data as $value) {
+            $value = (string) $value;
+
+            if (!empty($this->enclosure)) {
+                $value = str_replace($this->enclosure, str_repeat($this->enclosure, 2), $value);
+            }
+
+            $value = sprintf('%1$s%2$s%1$s', $this->enclosure, (string) $value);
+
+            $columns[] = $value;
         }
 
-        unset($this->datas[0]);
+        $data = implode($this->delimiter, $columns);
+        $data = $this->encode($data);
 
-        foreach ($this->datas as $v) {
-            $this->append($this->datasToCsvLine($v));
+        return $data;
+    }
+
+    /*
+     * Changes the charset if needed.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function encode($value)
+    {
+        return mb_convert_encoding(
+            $value,
+            $this->charset,
+            mb_detect_encoding($value, mb_list_encodings())
+        );
+    }
+
+    /*
+     * Renders the CSV.
+     *
+     * @param string $filename @see file_put_contents
+     * @param int $flags @see file_put_contents
+     *
+     * @return string
+     */
+    public function render($filename = null, $flags = null)
+    {
+        if ($this->isModified || empty($this->render)) {
+            $lines = [];
+
+            if (!empty($this->headers)) {
+                $lines[] = $this->formatData($this->headers);
+            }
+
+            foreach ($this->datas as $data) {
+                $lines[] = $this->formatData($data);
+            }
+
+            $this->render = implode($this->encode($this->endOfLine), $lines);
         }
 
-        if ($this->encoding !== 'UTF-8') {
-            $this->render = iconv(
-                mb_detect_encoding($this->render),
-                $this->encoding,
-                $this->render
-            );
+        $this->isModified = false;
+
+        if ($filename !== null) {
+            $content = $this->render;
+
+            if ($flags === FILE_APPEND && file_exists($filename)) {
+                $content = $this->endOfLine.$content;
+            }
+            
+            file_put_contents($filename, $content, $flags, $context);
         }
 
         return $this->render;
-    }
-
-    public function hasDatas()
-    {
-        return count($this->datas) > 1;
-    }
-
-    protected function datasToCsvLine($datas)
-    {
-        foreach ($datas as $k => $v) {
-            $v = str_replace('\\', '\\\\', $v);
-
-            if ($this->enclose) {
-                $v = str_replace($this->enclose, '\\'.$this->enclose, $v);
-            } else {
-                $v = str_replace($this->delimiter, '\\'.$this->delimiter, $v);
-            }
-
-            $datas[$k] = $this->enclose.$v.$this->enclose;
-        }
-
-        $datas = implode($this->delimiter, $datas);
-
-        return $datas;
-    }
-
-    protected function append($line)
-    {
-        $this->render.= sprintf("%s%s", $line, $this->endline);
-    }
-
-    public function compileToFile($filename)
-    {
-        if (file_exists($filename)) {
-            unlink($filename);
-        }
-
-        file_put_contents($filename, $this->compile());
     }
 }
