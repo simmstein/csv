@@ -332,7 +332,7 @@ class Csv
             if ($flags === FILE_APPEND && file_exists($filename)) {
                 $content = $this->endOfLine.$content;
             }
-            
+
             file_put_contents($filename, $content, $flags, $context);
         }
 

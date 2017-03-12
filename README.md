@@ -14,8 +14,7 @@ Or in your composer.json:
 ```
 {
     "require": {
-        [...]
-        "deblan/csv": "dev-master"
+        "deblan/csv": "~2"
     }
 }
 ```
@@ -29,22 +28,41 @@ use Deblan\Csv\Csv;
 
 $csv = new Csv();
 
-$csv->addLine(array('Foo', '$1000'));
-$csv->addLine(array('Bar', '$600'));
+// Defines the delimiter (default is ;)
+$csv->setDelimiter(";");
 
-$result = $csv->compile();
-```
+// Defines the enclosure (default is ")
+$csv->setEnclosure('"');
 
-```php
-use Deblan\Csv\Csv;
+// Defines the end of line (default is \n)
+$csv->setEndOfLine("\n");
 
-$csv = new Csv();
+// Defines the charset (default is UTF-8)
+$csv->setCharset("UTF-8");
 
-$csv->setLegend(array('product name', 'price'));
-$csv->addLine(array('Foo', '$1000'));
-$csv->addLine(array('Bar', '$600'));
+// Add a new line at the end
+$csv->addData(['Foo', '$1000'));
 
-$csv->compileToFile('products.csv');
+// Add a new line at the end
+$csv->appendData(['Bar', '$600']);
+
+// Add a new line at the beginning
+$csv->prependData(['Boo', '$3000']);
+
+// Defines all the datas
+$csv->setDatas([[...], [...]]);
+
+// Defines the header
+$csv->setHeaders(["Product", "Price"]);
+
+// Rendering
+$result = $csv->render();
+
+// Rendering to a file
+$result = $csv->render("products.csv");
+
+// Appending to a file
+$result = $csv->render("products.csv", FILE_APPEND);
 ```
 
 ### Parser
