@@ -1,7 +1,7 @@
 CSV parser/generator
 ====================
 
-[![](https://phpci.gitnet.fr/build-status/image/1?branch=master&label=PHPCensor&style=flat-square)](https://phpci.gitnet.fr/build-status/view/1)
+<a href="https://phpci.gitnet.fr/build-status/view/1">![](https://phpci.gitnet.fr/build-status/image/1?branch=master&label=PHPCensor&style=flat-square)</a>
 
 A simple PHP library to parse and generate CSV files.
 
